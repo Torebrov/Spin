@@ -1,68 +1,73 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Умные мысли</title>
+    <title>Правильная мотивация</title>
     <style>
         :root {
-            --reel-width: 130px;
-            --item-height: 90px;
-            --bg-color: #0b0e14;
-            --accent-color: #00d2ff;
-            --gold-color: #f1c40f;
+            --reel-width: 120px;
+            --item-height: 80px;
+            --visible-items: 1;
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: #1a1a2e;
             color: white;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
-            overflow: hidden;
         }
 
+        h1 { margin-bottom: 20px; color: #00d2ff; }
+
+        /* Контейнер для всех барабанов */
         .slot-machine {
             display: flex;
-            gap: 12px;
-            padding: 25px;
+            gap: 10px;
+            padding: 20px;
             background: #16213e;
-            border: 4px solid #1f4068;
-            border-radius: 20px;
+            border: 4px solid #0f3460;
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 210, 255, 0.3);
+            overflow: hidden;
             position: relative;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
         }
 
-        /* Золотая рамка фокуса */
+        /* Золотая рамка по центру */
         .slot-machine::after {
             content: "";
             position: absolute;
-            top: 50%; left: 0; right: 0;
+            top: 50%;
+            left: 0;
+            right: 0;
             height: var(--item-height);
             transform: translateY(-50%);
-            border: 3px solid var(--gold-color);
-            background: rgba(241, 196, 15, 0.05);
+            border: 3px solid #f1c40f;
+            box-shadow: 0 0 15px rgba(241, 196, 15, 0.5);
             pointer-events: none;
             z-index: 10;
         }
 
+        /* Один барабан */
         .reel {
             width: var(--reel-width);
-            height: var(--item-height);
-            background: #0b0e14;
-            border-radius: 8px;
+            height: calc(var(--item-height) * var(--visible-items));
+            background: #0f3460;
+            border-radius: 5px;
             overflow: hidden;
             position: relative;
         }
 
+        /* Лента со словами внутри барабана */
         .reel-container {
             display: flex;
             flex-direction: column;
+            transition: transform 0.5s cubic-bezier(0.45, 0.05, 0.55, 0.95);
             will-change: transform;
         }
 
@@ -72,69 +77,50 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
-            padding: 0 10px;
+            padding: 0 5px;
+            border-bottom: 1px solid #1a1a2e;
             box-sizing: border-box;
-            /* Скрываем текст по умолчанию */
-            color: rgba(255, 255, 255, 0); 
-            text-shadow: none;
-            transition: color 0.4s ease, text-shadow 0.4s ease;
-        }
-
-        /* Состояние заглушки (знак вопроса) */
-        .slot-item.hidden-state::before {
-            content: "?";
-            color: #2a3a5a;
-            font-size: 24px;
-        }
-
-        /* Когда барабан остановился — проявляем текст */
-        .slot-item.reveal {
-            color: var(--gold-color);
-            text-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
-        }
-        .slot-item.reveal::before {
-            content: none;
         }
 
         button {
-            margin-top: 40px;
-            padding: 15px 50px;
-            font-size: 1.3rem;
-            font-weight: bold;
-            background: linear-gradient(45deg, #e94560, #ff4d6d);
+            margin-top: 30px;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background: #e94560;
             color: white;
             border: none;
-            border-radius: 50px;
+            border-radius: 30px;
             cursor: pointer;
-            box-shadow: 0 10px 20px rgba(233, 69, 96, 0.3);
-            transition: 0.2s;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(233, 69, 96, 0.4);
         }
 
-        button:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(233, 69, 96, 0.4); }
-        button:active { transform: translateY(1px); }
-        button:disabled { background: #444; cursor: not-allowed; box-shadow: none; }
+        button:hover { background: #ff4d6d; transform: scale(1.05); }
+        button:disabled { background: #555; cursor: not-allowed; }
 
-        .result-phrase {
-            margin-top: 30px;
-            font-size: 1.8rem;
-            color: #fff;
-            min-height: 1.2em;
-            text-align: center;
-            max-width: 80%;
+        .result-text {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            min-height: 1.6em;
+            color: #f1c40f;
         }
     </style>
 </head>
 <body>
 
-    <div class="slot-machine" id="machine"></div>
+    <h1>Генератор универсальных фраз Ивана</h1>
 
-    <div class="result-phrase" id="resultLabel">Нажми, чтобы узнать что думает Иван</div>
+    <div class="slot-machine" id="machine">
+        </div>
 
-    <button id="spinBtn">ЗАПУСК 🎰</button>
+    <div class="result-text" id="finalResult">Нажми чтобы замотивировать летчика</div>
+
+    <button id="spinBtn">Вперёд! 🎰</button>
 
     <script>
+        // ВАША ТАБЛИЦА (5 столбцов)
         const data = [
             ["Че сказал блять?", "Лети уже,", "Ну тупоооой...,", "ты со стрелками дружишь?", "Не душни!"],
             ["тройник,", "нубяра,", "косяпор,", "лошара,", "ПАПУАС,"],
@@ -145,16 +131,14 @@
 
         const machine = document.getElementById('machine');
         const spinBtn = document.getElementById('spinBtn');
-        const resultLabel = document.getElementById('resultLabel');
+        const resultText = document.getElementById('finalResult');
         
-        const itemHeight = 90; 
+        const itemHeight = 80; // Должно совпадать с CSS
         const reelsCount = 5;
-        let reelContainers = [];
+        let reelElements = [];
 
+        // Инициализация барабанов
         function init() {
-            machine.innerHTML = '';
-            reelContainers = [];
-
             for (let i = 0; i < reelsCount; i++) {
                 const reel = document.createElement('div');
                 reel.className = 'reel';
@@ -162,14 +146,9 @@
                 const container = document.createElement('div');
                 container.className = 'reel-container';
                 
-                // 1. Первая ячейка — пустая со знаком вопроса (заглушка)
-                const blank = document.createElement('div');
-                blank.className = 'slot-item hidden-state';
-                container.appendChild(blank);
-
-                // 2. Добавляем реальные фразы (несколько циклов для длины прокрутки)
-                const spinData = [...data[i], ...data[i], ...data[i]];
-                spinData.forEach(text => {
+                // Заполняем барабан словами (дублируем для эффекта бесконечности)
+                const list = [...data[i], ...data[i], ...data[i]]; 
+                list.forEach(text => {
                     const item = document.createElement('div');
                     item.className = 'slot-item';
                     item.textContent = text;
@@ -178,50 +157,45 @@
 
                 reel.appendChild(container);
                 machine.appendChild(reel);
-                reelContainers.push(container);
+                reelElements.push(container);
             }
         }
 
         async function spin() {
             spinBtn.disabled = true;
-            resultLabel.style.opacity = "0.3";
-            resultLabel.textContent = "Барабаны крутятся...";
+            resultText.textContent = "Вращаем...";
+            
+            const results = [];
 
-            // Скрываем все предыдущие результаты перед новым броском
-            document.querySelectorAll('.slot-item').forEach(el => el.classList.remove('reveal'));
-
-            const finalWords = [];
-
-            const promises = reelContainers.map((container, i) => {
+            const spinPromises = reelElements.map((container, i) => {
                 return new Promise(resolve => {
+                    // Выбираем случайный индекс из оригинального списка
                     const randomIndex = Math.floor(Math.random() * data[i].length);
-                    const chosenWord = data[i][randomIndex];
-                    finalWords.push(chosenWord);
+                    results.push(data[i][randomIndex]);
 
-                    // Рассчитываем позицию (прокручиваем ко второму набору данных)
-                    const targetIndex = randomIndex + data[i].length + 1;
-                    const targetY = targetIndex * itemHeight;
+                    // Рассчитываем смещение (учитываем вторую копию списка для надежности анимации)
+                    const targetY = (randomIndex + data[i].length) * itemHeight;
                     
-                    const duration = 2 + (i * 0.6); // Каждый следующий барабан крутится дольше
-                    
-                    container.style.transition = `transform ${duration}s cubic-bezier(0.15, 0, 0.15, 1)`;
+                    // Добавляем случайную задержку и длительность для каждого барабана
+                    const duration = 2 + i * 0.5; 
+                    container.style.transition = `transform ${duration}s cubic-bezier(0.25, 0.1, 0.25, 1)`;
                     container.style.transform = `translateY(-${targetY}px)`;
 
-                    // Когда конкретный барабан остановился
-                    setTimeout(() => {
-                        // Находим именно ту ячейку, на которой остановились, и проявляем её
-                        const items = container.querySelectorAll('.slot-item');
-                        items[targetIndex].classList.add('reveal');
-                        resolve();
-                    }, duration * 1000);
+                    setTimeout(resolve, duration * 1000);
                 });
             });
 
-            await Promise.all(promises);
+            await Promise.all(spinPromises);
             
-            resultLabel.style.opacity = "1";
-            resultLabel.textContent = finalWords.join(" ");
+            resultText.textContent = results.join(" ");
             spinBtn.disabled = false;
+
+            // Сброс позиции без анимации для следующего раза (необязательно, но полезно)
+            reelElements.forEach((container, i) => {
+                const currentIndex = data[i].indexOf(results[i]);
+                container.style.transition = 'none';
+                container.style.transform = `translateY(-${currentIndex * itemHeight}px)`;
+            });
         }
 
         spinBtn.addEventListener('click', spin);
